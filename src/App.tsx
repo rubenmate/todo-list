@@ -1,4 +1,6 @@
 import { SetStateAction, useState } from "react";
+import { AiOutlineCheckSquare, AiOutlineGithub } from "react-icons/ai";
+import { FaTrash } from "react-icons/fa";
 
 type Task = {
     id: number;
@@ -22,15 +24,18 @@ const Task: React.FC<{
     handleCheckboxChange: Function;
 }> = ({ task, handleTodoDelete, handleCheckboxChange }) => {
     return (
-        <li className="flex">
-            <input
-                type="checkbox"
-                checked={task.done}
-                onChange={() => handleCheckboxChange(task.id)}
-            ></input>
-            <p>{task.name}</p>
-            <button className="ml-5 p-1" onClick={() => handleTodoDelete(task.id)}>
-                Delete
+        <li className="flex justify-between items-center w-full gap-x-1 text-2xl mb-2">
+            <div className="flex">
+                <input
+                    type="checkbox"
+                    checked={task.done}
+                    onChange={() => handleCheckboxChange(task.id)}
+                    className="mr-2"
+                ></input>
+                <p className="w-80">{task.name}</p>
+            </div>
+            <button onClick={() => handleTodoDelete(task.id)}>
+                <FaTrash />
             </button>
         </li>
     );
@@ -115,10 +120,7 @@ const SearchFilterTaskForm: React.FC<{
                 }}
                 onSubmit={(e) => e.preventDefault()}
             />
-            <div>
-                Filter by tags <button>Important</button> <button>Not Important</button>{" "}
-                <button>Daily</button>
-            </div>
+            <div>Filter by tags</div>
         </div>
     );
 };
@@ -127,19 +129,26 @@ function App() {
     const [list, setList] = useState(TASKS);
     const [filterText, setFilterText] = useState("");
     const [newTaskText, setNewTaskText] = useState("");
-    console.log(list);
 
     return (
         <>
-            <h1>To-Do App</h1>
-            <SearchFilterTaskForm filterText={filterText} onFilterTextChange={setFilterText} />
-            <TaskList taskList={list} setList={setList} filterText={filterText} />
-            <NewTaskForm
-                taskList={list}
-                setList={setList}
-                newTaskText={newTaskText}
-                onNewTaskTextChange={setNewTaskText}
-            />
+            <nav className="flex justify-between items-center px-4 max-w-5xl mx-auto bg-gray-700">
+                <AiOutlineCheckSquare className="w-10 h-10 text-white" />
+                <a href="https://github.com/rubenmate/todo-list" target="_blank">
+                    <AiOutlineGithub className="w-8 h-8 text-white" />
+                </a>
+            </nav>
+            <div className="flex flex-col items-center max-w-4xl mx-auto">
+                <h1>To-Do App</h1>
+                <SearchFilterTaskForm filterText={filterText} onFilterTextChange={setFilterText} />
+                <TaskList taskList={list} setList={setList} filterText={filterText} />
+                <NewTaskForm
+                    taskList={list}
+                    setList={setList}
+                    newTaskText={newTaskText}
+                    onNewTaskTextChange={setNewTaskText}
+                />
+            </div>
         </>
     );
 }
