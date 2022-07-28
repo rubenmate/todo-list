@@ -60,7 +60,7 @@ const TaskList: React.FC<{
     }
 
     return (
-        <ul className="w-80">
+        <ul className="w-80 md:w-4/5">
             {taskList
                 .filter((task) => task.name.toLowerCase().match(filterText.toLowerCase()))
                 .map((task: Task) => (
