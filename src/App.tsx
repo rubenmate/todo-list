@@ -1,5 +1,6 @@
-import { SetStateAction, useState } from "react";
+import React, { ReactNode, SetStateAction, useState } from "react";
 import { AiOutlineCheckSquare, AiOutlineGithub } from "react-icons/ai";
+import { IoMdAddCircleOutline } from "react-icons/io";
 import { FaTrash } from "react-icons/fa";
 
 type Task = {
@@ -24,7 +25,7 @@ const Task: React.FC<{
     handleCheckboxChange: Function;
 }> = ({ task, handleTodoDelete, handleCheckboxChange }) => {
     return (
-        <li className="flex justify-between items-center w-full gap-x-1 text-2xl mb-2">
+        <li className="flex justify-between items-center w-full gap-x-1 text-2xl mb-2 border border-slate-600 rounded-sm p-2 shadow-xl">
             <div className="flex">
                 <input
                     type="checkbox"
@@ -32,10 +33,10 @@ const Task: React.FC<{
                     onChange={() => handleCheckboxChange(task.id)}
                     className="mr-2"
                 ></input>
-                <p className="w-80">{task.name}</p>
+                <p className="md:w-80">{task.name}</p>
             </div>
-            <button onClick={() => handleTodoDelete(task.id)}>
-                <FaTrash />
+            <button className="bg-red-600 p-1 rounded-md" onClick={() => handleTodoDelete(task.id)}>
+                <FaTrash className="text-gray-800" />
             </button>
         </li>
     );
@@ -59,7 +60,7 @@ const TaskList: React.FC<{
     }
 
     return (
-        <ul>
+        <ul className="w-80">
             {taskList
                 .filter((task) => task.name.toLowerCase().match(filterText.toLowerCase()))
                 .map((task: Task) => (
@@ -85,21 +86,23 @@ const NewTaskForm: React.FC<{
         setList([...taskList, { id: id, done: false, name: newTaskText }]);
     }
     return (
-        <form>
+        <form className="flex gap-x-2">
             <input
+                className="text-slate-900 rounded-sm"
                 type="text"
                 placeholder="New task"
                 value={newTaskText}
                 onChange={(e) => onNewTaskTextChange(e.target.value)}
             />
             <button
+                className="bg-blue-500 rounded-md h-10 p-2"
                 onClick={(e) => {
                     e.preventDefault();
                     handleTodoAdd();
                     onNewTaskTextChange("");
                 }}
             >
-                +
+                <IoMdAddCircleOutline className="h-5 w-5" />
             </button>
         </form>
     );
@@ -109,9 +112,13 @@ const SearchFilterTaskForm: React.FC<{
     filterText: string;
     onFilterTextChange: React.Dispatch<SetStateAction<string>>;
 }> = ({ filterText, onFilterTextChange }) => {
+    function handleFiltersClean() {
+        onFilterTextChange("");
+    }
     return (
-        <div className="flex">
+        <div className="flex mb-2">
             <input
+                className="text-slate-900 rounded-sm"
                 type="text"
                 placeholder="Search tasks..."
                 value={filterText}
@@ -120,9 +127,34 @@ const SearchFilterTaskForm: React.FC<{
                 }}
                 onSubmit={(e) => e.preventDefault()}
             />
-            <div>Filter by tags</div>
+            <button className="bg-blue-500 rounded-md h-10 p-2 ml-2" onClick={handleFiltersClean}>
+                Clear filters
+            </button>
         </div>
     );
+};
+
+const Title: React.FC<{ children: ReactNode }> = ({ children }) => {
+    return <h1 className="text-6xl md:text-8xl font-bold mb-8">{children}</h1>;
+};
+
+const Navbar = () => {
+    return (
+        <nav className="flex justify-between items-center px-4 max-w-5xl mx-auto">
+            <AiOutlineCheckSquare className="w-10 h-10 text-white" />
+            <a
+                href="https://github.com/rubenmate/todo-list"
+                target="_blank"
+                className="flex items-center"
+            >
+                Source Code <AiOutlineGithub className="ml-1 w-8 h-8 text-white" />
+            </a>
+        </nav>
+    );
+};
+
+const AppWrapper: React.FC<{ children: ReactNode }> = ({ children }) => {
+    return <div className="flex flex-col items-center max-w-4xl mx-auto">{children}</div>;
 };
 
 function App() {
@@ -132,14 +164,9 @@ function App() {
 
     return (
         <>
-            <nav className="flex justify-between items-center px-4 max-w-5xl mx-auto bg-gray-700">
-                <AiOutlineCheckSquare className="w-10 h-10 text-white" />
-                <a href="https://github.com/rubenmate/todo-list" target="_blank">
-                    <AiOutlineGithub className="w-8 h-8 text-white" />
-                </a>
-            </nav>
-            <div className="flex flex-col items-center max-w-4xl mx-auto">
-                <h1>To-Do App</h1>
+            <Navbar />
+            <AppWrapper>
+                <Title>To-Do App</Title>
                 <SearchFilterTaskForm filterText={filterText} onFilterTextChange={setFilterText} />
                 <TaskList taskList={list} setList={setList} filterText={filterText} />
                 <NewTaskForm
@@ -148,7 +175,7 @@ function App() {
                     newTaskText={newTaskText}
                     onNewTaskTextChange={setNewTaskText}
                 />
-            </div>
+            </AppWrapper>
         </>
     );
 }
